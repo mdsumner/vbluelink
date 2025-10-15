@@ -1,8 +1,9 @@
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
-conflicts_prefer(dplyr::filter)
+
 ## Load your R files
 tar_source()
+conflicts_prefer(dplyr::filter)
 # facilitate this working in parallel
 controller <- crew_controller_local(
   name = "my_controller",
