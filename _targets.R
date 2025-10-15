@@ -9,25 +9,41 @@ controller <- crew_controller_local(
   seconds_idle = 3
 )
 
+# values <- tidyr::expand_grid(
+#   data_source = c("atm_flux_diag", "ice_force", "ocean_eta_t", "ocean_force",
+#                             "ocean_mld", "ocean_salt", "ocean_temp", "ocean_tx_trans_int_z",
+#                             "ocean_ty_trans_int_z", "ocean_u", "ocean_v", "ocean_w"),
+#   time_chunk = c("annual", "daily", "month")
+# )
+
+
 tar_option_set(
   controller = controller
 )
-## tar_plan supports drake-style targets and also tar_target()
-tar_plan(
-  thredds = FALSE,
+targets <-tar_map(
+  values = tidyr::expand_grid(
+       data_source = c("atm_flux_diag", "ice_force", "ocean_eta_t", "ocean_force",
+                  "ocean_mld", "ocean_salt", "ocean_temp", "ocean_tx_trans_int_z",
+                  "ocean_ty_trans_int_z", "ocean_u", "ocean_v", "ocean_w")[1:3],
+              time_chunk = c("annual", "daily", "month")[1]),
 
-  files = local({if (thredds) {
-                   fss =  read_parquet("https://github.com/mdsumner/dryrun/releases/download/latest/BRAN-netcdf-2023-netcdf.parquet")
-                  } else {
-                    fss <-  read_parquet("/scratch/jk72/mds581/BRAN-netcdf-2023-netcdf.parquet")
-                    fss <- fss |> dplyr::mutate(url = gsub("https://thredds.nci.org.au/thredds/fileServer/gb6/BRAN/BRAN2023", "/g/data/gb6/BRAN/BRAN2023", url))
-             }
-      fss
-  }),
-
-  files0 = files |> dplyr::filter(stringr::str_detect(.data$url, ".*daily.*temp.*\\.nc$")),
-  url_netcdf = files0$url,
+  tar_target(regexp, glue(".*{time_chunk}.*{data_source}.*\\.nc$")),
+  tar_target(files, bran_files("/g/data/gb6/BRAN/BRAN2023") |> filter(str_detect(url, regexp))),
+  tar_target(url_netcdf, files$url),
   tar_target(dillbytes, vfun(url_netcdf), pattern = map(url_netcdf))
-
-
 )
+
+
+# ## tar_plan supports drake-style targets and also tar_target()
+# tar_plan(
+#   insituroot = "/g/data/gb6/BRAN/BRAN2023",
+#   thredds = fs::dir_exists(insituroot),
+#
+#
+#
+#   files0 = files |> dplyr::filter(stringr::str_detect(.data$url, ".*daily.*temp.*\\.nc$")),
+#   url_netcdf = files0$url,
+#   tar_target(dillbytes, vfun(url_netcdf), pattern = map(url_netcdf))
+#
+#
+# )
