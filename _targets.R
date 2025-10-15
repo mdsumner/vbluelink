@@ -3,7 +3,6 @@ source("./packages.R")
 
 ## Load your R files
 tar_source()
-conflicts_prefer(dplyr::filter)
 # facilitate this working in parallel
 controller <- crew_controller_local(
   name = "my_controller",
@@ -22,7 +21,7 @@ targets <-tar_map(
               time_chunk = c("annual", "daily", "month")[1]),
 
   tar_target(regexp, create_regexp(time_chunk, data_source)),
-  tar_target(files, bran_files("/g/data/gb6/BRAN/BRAN2023") |> filter(str_detect(url, regexp))),
+  tar_target(files, bran_files("/g/data/gb6/BRAN/BRAN2023") |> dplyr::filter(str_detect(url, regexp))),
   tar_target(url_netcdf, files$url),
   tar_target(dillbytes, vfun(url_netcdf), pattern = map(url_netcdf))
 )
