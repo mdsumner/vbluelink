@@ -14,8 +14,14 @@ tar_option_set(
 )
 ## tar_plan supports drake-style targets and also tar_target()
 tar_plan(
+  thredds <- FALSE
 
-  files =  read_parquet("https://github.com/mdsumner/dryrun/releases/download/latest/BRAN-netcdf-2023-netcdf.parquet"),
+  if (thredds) {
+    files =  read_parquet("https://github.com/mdsumner/dryrun/releases/download/latest/BRAN-netcdf-2023-netcdf.parquet"),
+  } else {
+    files =  read_parquet("/g/data/jk72/mds581/BRAN-netcdf-2023-netcdf.parquet")
+    files$url <- gsub("https://thredds.nci.org.au/thredds/fileServer/gb6/BRAN/BRAN2023", "/g/data/gb6/BRAN/BRAN2023", files$url)
+  }
   files0 = files |> dplyr::filter(stringr::str_detect(.data$url, ".*daily.*temp.*\\.nc$")),
   url_netcdf = files0$url,
   tar_target(dillbytes, vfun(url_netcdf), pattern = map(url_netcdf))
