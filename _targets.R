@@ -5,7 +5,7 @@ tar_source()
 # facilitate this working in parallel
 controller <- crew_controller_local(
   name = "my_controller",
-  workers = 46, #max(c(1L, parallelly::availableCores()-10)),
+  workers = 60, #max(c(1L, parallelly::availableCores()-10)),
   seconds_idle = 3
 )
 
