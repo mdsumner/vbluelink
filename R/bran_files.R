@@ -1,3 +1,6 @@
+create_regexp <- function(time_chunk, data_source) {
+  glue(".*{time_chunk}.*{data_source}.*\\.nc$")
+}
 bran_files <- function(root = "") {
   ## ignore root we don't need for the online version
   if (nzchar(root)) {
