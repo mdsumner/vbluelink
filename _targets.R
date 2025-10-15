@@ -1,5 +1,6 @@
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
+conflicts_prefer(dplyr::filter)
 ## Load your R files
 tar_source()
 # facilitate this working in parallel
