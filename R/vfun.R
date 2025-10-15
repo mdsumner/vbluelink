@@ -12,7 +12,7 @@ vfun <- function(x) {
     store <- obstore$store$from_url(host)
     registry <- virtualizarr$registry$ObjectStoreRegistry(setNames(list(store), host))
   } else {
-    prefix <- "/g/data/gb6/BRAN/BRAN2023/daily"
+    prefix <- "/g/data/gb6/BRAN/BRAN2023"
     store <- obstore$store$LocalStore(prefix = prefix)
     registry <- virtualizarr$registry$ObjectStoreRegistry(reticulate::dict("file://" = store))
   }
