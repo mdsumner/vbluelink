@@ -1,3 +1,5 @@
+.libPaths("Rlib")
+
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
 
@@ -23,7 +25,7 @@ targets <-tar_map(
   tar_target(regexp, create_regexp(time_chunk, data_source)),
   tar_target(files, bran_files("/g/data/gb6/BRAN/BRAN2023") |> dplyr::filter(str_detect(url, regexp))),
   tar_target(url_netcdf, files$url),
-  tar_target(dillbytes, vfun(url_netcdf), pattern = map(url_netcdf))
+  tar_target(dillbytes, vfun(url_netcdf), pattern = map(url_netcdf), format = "qs", iteration = "list")
 )
 
 

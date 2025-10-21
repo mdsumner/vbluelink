@@ -28,5 +28,5 @@ vfun <- function(x) {
   if (inherits(ds, "try-error")) return(NULL)
 
   bytes <- dill$dumps(ds)
-  blob::blob(as.raw(bytes))
+  as.raw(bytes)
 }

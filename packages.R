@@ -1,3 +1,6 @@
+
+.libPaths("/scratch/jk72/mds581/vbluelink/Rlib")
+
 ## library() calls go here
 library(conflicted)
 library(dotenv)
@@ -15,3 +18,4 @@ library(tibble)
 library(fs)
 library(tarchetypes)
 library(glue)
+
